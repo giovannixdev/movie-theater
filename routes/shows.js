@@ -34,6 +34,33 @@ router.get("/genres/:genre", async (req, res) => {
 //   res.status(201).json({ message: "Show created!" })
 // })
 
+// PUT update rating of a show that has been watched
+router.put("/:id/watched", async (req, res) => {
+  const show = await Show.findByPk(req.params.id);
+  // console.log(show.rating);
+  if (show.userId != null) {
+    // req.body is empty then it doesn't update
+    await show.update({ rating: req.body.rating })
+    // console.log(show.rating);
+    res.json({ message: "Rating has been updated!" });
+  } else {
+    res.json({ message: "Show haven't been watched!" });
+  }
+})
+
+// PUT update the status of a show
+router.put("/:id/updates", async (req, res) => {
+  const show = await Show.findByPk(req.params.id);
+  if (show) {
+    await show.update({status: req.body.status})
+    // if (show.status == "on-going") await show.update({ status: 'canceled' })
+    // else await show.update({ status: 'canceled' })
+    res.json({ message: "Show updated!" });
+  } else {
+    res.status(404).json({ message: "Show not found!" });
+  }
+})
+
 // DELETE a show
 router.delete("/:id", async (req, res) => {
   const show = await Show.destroy({
